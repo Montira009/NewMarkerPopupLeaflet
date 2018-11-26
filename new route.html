@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>new routing more markers</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.css"/>
+  </head>
+  <style media="screen">
+      html,
+      body,
+      #map {
+              height: 100%;
+              width: 100%;
+              padding: 0px;
+              margin: 0px;
+              background: white;
+            }
+
+      .leaflet-routing-container
+      {
+            display:none;
+      }
+  </style>
+  <body>
+    <div id="map" style="width: 860px; height: 640px"></div>
+    <script src="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.js"></script>
+    <script src="../11-10-18/dist/leaflet-routing-machine.css"></script>
+    <script src="../11-10-18/dist/leaflet-routing-machine.js"></script>
+    <script src="input_lalong.txt">  </script>
+    <script type="text/javascript">
+    'use strict';
+
+
+    var map = L.map('map').setView([7.894054, 98.352496], 14);
+
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+    maxZoom: 18,
+    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    var groups = {
+    };
+
+    var layercontrol = L.control.layers(null, groups).addTo(map);
+
+    //var router = L.Routing.osrm({});
+    // using the "new", because of the bug on L.Routing.osrmv1
+    var router = new L.Routing.OSRMv1({});
+
+    var route1waypoints = [
+    L.Routing.waypoint(L.latLng(7.900133, 98.353518)),
+    L.Routing.waypoint(L.latLng(7.899312, 98.351182)),
+    L.Routing.waypoint(L.latLng(7.901835, 98.338557)),
+    L.Routing.waypoint(L.latLng(7.902976, 98.336031)),
+    ],
+    route1plan = L.Routing.plan(route1waypoints);
+
+    router.route(route1waypoints, function(error, routes) {
+        var route1line = L.Routing.line(routes[0]);
+        var route1group = L.layerGroup([route1plan, route1line]).addTo(map);
+            layercontrol.addOverlay(route1group, "LayerRoute1");
+    }, null, {});
+
+    </script>
+  </body>
+</html>
